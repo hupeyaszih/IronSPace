@@ -13,4 +13,6 @@ int get_player_plane_y(Player* player);
 int get_player_pos_x(Player* player);
 int get_player_pos_y(Player* player);
 
+int get_player_angle(Player* player);
+
 #endif

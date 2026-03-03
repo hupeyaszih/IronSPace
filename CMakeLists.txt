@@ -18,7 +18,7 @@ add_executable(IronSPace
     src/player.c
 )
 
-target_link_libraries(IronSPace ${SDL2_LIBRARIES})
+target_link_libraries(IronSPace ${SDL2_LIBRARIES} m)
 
 target_include_directories(IronSPace
     PRIVATE
