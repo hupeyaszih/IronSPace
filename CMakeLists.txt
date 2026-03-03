@@ -17,6 +17,7 @@ add_executable(IronSPace
     src/renderer.c
     src/player.c
     src/game.c
+    src/game_map.c
 )
 
 target_link_libraries(IronSPace ${SDL2_LIBRARIES} m)

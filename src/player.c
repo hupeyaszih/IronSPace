@@ -7,7 +7,7 @@ struct Player{
     double posY; 
 
     double planeX; 
-    double planeY; // FOV ~66 derece
+    double planeY;
 
     double angle;
 };
@@ -17,8 +17,8 @@ Player* create_player(){
 
     player->posX = 3.5;
     player->posY = 3.5;
-    player->angle = 0;
-    player->planeX = 0;
+    player->angle = 0.0;
+    player->planeX = 0.0;
     player->planeY = 0.66; // FOV ~66 derece
     return player;
 }
@@ -28,34 +28,34 @@ double get_player_angle(Player* player){
     return player->angle;
 }
 
-int get_player_plane_x(Player* player){
+double get_player_plane_x(Player* player){
     return player->planeX;
 }
 
-int get_player_plane_y(Player* player){
+double get_player_plane_y(Player* player){
     return player->planeY;
 }
 
-int get_player_pos_x(Player* player){
+double get_player_pos_x(Player* player){
     return player->posX;
 }
 
-int get_player_pos_y(Player* player){
+double get_player_pos_y(Player* player){
     return player->posY;
 }
 
 /// SETTER FUNCTIONS ///
-void set_player_plane_x(Player* player, int plane_x){
+void set_player_plane_x(Player* player, double plane_x){
     player->planeX = plane_x;
 }
-void set_player_plane_y(Player* player, int plane_y){
+void set_player_plane_y(Player* player, double plane_y){
     player->planeY = plane_y;
 }
 
-void set_player_pos_x(Player* player, int player_pos_x){
+void set_player_pos_x(Player* player, double player_pos_x){
     player->posX = player_pos_x;
 }
-void set_player_pos_y(Player* player, int player_pos_y){
+void set_player_pos_y(Player* player, double player_pos_y){
     player->posY = player_pos_y;
 }
 
@@ -64,3 +64,13 @@ void set_player_angle(Player* player, double player_angle){
     if (player->angle < 0) player->angle += 2 * M_PI;
     if (player->angle > 2 * M_PI) player->angle -= 2 * M_PI;
 }
+
+
+/// ADD
+void add_player_plane_x(Player* player, double value) {set_player_plane_x(player, get_player_plane_x(player)+value);}
+void add_player_plane_y(Player* player, double value) {set_player_plane_y(player, get_player_plane_y(player)+value);}
+
+void add_player_pos_x(Player* player, double value) {set_player_pos_x(player, get_player_pos_x(player)+value);}
+void add_player_pos_y(Player* player, double value) {set_player_pos_y(player, get_player_pos_y(player)+value);}
+
+void add_player_angle(Player* player, double value) {set_player_angle(player, get_player_angle(player)+value);}

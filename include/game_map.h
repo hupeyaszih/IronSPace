@@ -4,15 +4,8 @@
 #define MAP_W 8
 #define MAP_H 8
 
-int world_map[MAP_H][MAP_W] = {
-    {1,1,1,1,1,1,1,1},
-    {1,0,0,0,0,0,0,1},
-    {1,0,0,1,0,0,0,1},
-    {1,0,0,0,0,1,0,1},
-    {1,0,0,0,0,0,0,1},
-    {1,0,1,0,0,0,0,1},
-    {1,0,0,0,0,0,0,1},
-    {1,1,1,1,1,1,1,1},
-};
+extern int world_map[MAP_H][MAP_W];
+
+int get_grid_type(int x, int y);
 
 #endif

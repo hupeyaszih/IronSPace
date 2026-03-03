@@ -26,7 +26,7 @@ struct Renderer{
 
 Renderer* create_renderer(int screen_width, int screen_height, int renderer_width, int renderer_height){
     Renderer* renderer = malloc(sizeof(Renderer));
-    renderer->render_distance = 50;
+    renderer->render_distance = 5;
 
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
         printf("error initializing SDL: %s\n", SDL_GetError());
@@ -57,7 +57,7 @@ Renderer* create_renderer(int screen_width, int screen_height, int renderer_widt
     return renderer;
 }
 
-void renderer_render(Renderer* renderer, int camera_pos_x, int camera_pos_y, double camera_angle){
+void renderer_render(Renderer* renderer, double camera_pos_x, double camera_pos_y, double camera_angle){
     for(int i = 0;i < renderer->pixel_count;i++) renderer->pixels[i] = get_rgb(0,0,0);
 
     double FOV = M_PI / 3; // 60 degree
@@ -104,8 +104,17 @@ void renderer_render(Renderer* renderer, int camera_pos_x, int camera_pos_y, dou
             if(endY >= renderer->renderer_height) endY = renderer->renderer_height - 1;
 
             for(int y = startY; y < endY; y++) {
+                // int pixel_id = y * renderer->renderer_width + x;
+                // int depth = 256 - ((int)(dist*renderer->render_distance) % 256);
+                // renderer->pixels[pixel_id] = get_rgb(depth, depth, depth); // Gri duvar
+                //                                                            //
+
                 int pixel_id = y * renderer->renderer_width + x;
-                renderer->pixels[pixel_id] = get_rgb(150, 150, 150); // Gri duvar
+                double distance_ratio = dist / renderer->render_distance;
+                if (distance_ratio > 1.0) distance_ratio = 1.0;
+                int depth = (int)(255 * (1.0 - distance_ratio));
+
+                renderer->pixels[pixel_id] = get_rgb(depth, depth, depth);
             }
         }
     }
