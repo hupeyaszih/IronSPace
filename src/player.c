@@ -1,4 +1,5 @@
 #include "player.h"
+#include "math.h"
 #include <stdlib.h>
 
 struct Player{
@@ -22,7 +23,8 @@ Player* create_player(){
     return player;
 }
 
-int get_player_angle(Player* player){
+/// GETTER FUNCTIONS ///
+double get_player_angle(Player* player){
     return player->angle;
 }
 
@@ -40,4 +42,25 @@ int get_player_pos_x(Player* player){
 
 int get_player_pos_y(Player* player){
     return player->posY;
+}
+
+/// SETTER FUNCTIONS ///
+void set_player_plane_x(Player* player, int plane_x){
+    player->planeX = plane_x;
+}
+void set_player_plane_y(Player* player, int plane_y){
+    player->planeY = plane_y;
+}
+
+void set_player_pos_x(Player* player, int player_pos_x){
+    player->posX = player_pos_x;
+}
+void set_player_pos_y(Player* player, int player_pos_y){
+    player->posY = player_pos_y;
+}
+
+void set_player_angle(Player* player, double player_angle){
+    player->angle = player_angle;
+    if (player->angle < 0) player->angle += 2 * M_PI;
+    if (player->angle > 2 * M_PI) player->angle -= 2 * M_PI;
 }

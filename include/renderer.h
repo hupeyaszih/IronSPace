@@ -1,14 +1,9 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "player.h"
-
 typedef struct Renderer Renderer;
 
-int start();
-
-Renderer* create_renderer(int screen_width, int screen_height);
-void renderer_render(Renderer* renderer, Player* player);
-
+Renderer* create_renderer(int screen_width, int screen_height, int renderer_width, int renderer_height);
+void renderer_render(Renderer* renderer, int camera_pos_x, int camera_pos_y, double camera_angle);
 
 #endif
