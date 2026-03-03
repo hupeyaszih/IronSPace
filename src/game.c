@@ -7,7 +7,7 @@
 int run(){
     Player* player = create_player(); 
 
-    Renderer* renderer = create_renderer(1920, 1080, 700, 700);
+    Renderer* renderer = create_renderer(1280, 800, 640, 400);
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
     int close = 0;

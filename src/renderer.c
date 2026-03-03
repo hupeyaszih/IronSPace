@@ -104,11 +104,6 @@ void renderer_render(Renderer* renderer, double camera_pos_x, double camera_pos_
             if(endY >= renderer->renderer_height) endY = renderer->renderer_height - 1;
 
             for(int y = startY; y < endY; y++) {
-                // int pixel_id = y * renderer->renderer_width + x;
-                // int depth = 256 - ((int)(dist*renderer->render_distance) % 256);
-                // renderer->pixels[pixel_id] = get_rgb(depth, depth, depth); // Gri duvar
-                //                                                            //
-
                 int pixel_id = y * renderer->renderer_width + x;
                 double distance_ratio = dist / renderer->render_distance;
                 if (distance_ratio > 1.0) distance_ratio = 1.0;
