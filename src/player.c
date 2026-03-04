@@ -65,12 +65,4 @@ void set_player_angle(Player* player, double player_angle){
     if (player->angle > 2 * M_PI) player->angle -= 2 * M_PI;
 }
 
-
-/// ADD
-void add_player_plane_x(Player* player, double value) {set_player_plane_x(player, get_player_plane_x(player)+value);}
-void add_player_plane_y(Player* player, double value) {set_player_plane_y(player, get_player_plane_y(player)+value);}
-
-void add_player_pos_x(Player* player, double value) {set_player_pos_x(player, get_player_pos_x(player)+value);}
-void add_player_pos_y(Player* player, double value) {set_player_pos_y(player, get_player_pos_y(player)+value);}
-
 void add_player_angle(Player* player, double value) {set_player_angle(player, get_player_angle(player)+value);}

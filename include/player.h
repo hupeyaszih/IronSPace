@@ -22,12 +22,5 @@ void set_player_pos_y(Player* player, double player_pos_y);
 
 void set_player_angle(Player* player, double player_angle);
 
-
-void add_player_plane_x(Player* player, double value);
-void add_player_plane_y(Player* player, double value);
-
-void add_player_pos_x(Player* player, double value);
-void add_player_pos_y(Player* player, double value);
-
 void add_player_angle(Player* player, double value);
 #endif
