@@ -15,7 +15,7 @@ struct Renderer{
     int renderer_height;
 
     int render_distance;
-
+ 
     uint32_t* pixels;
     uint32_t pixel_count;
 

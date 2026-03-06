@@ -68,7 +68,7 @@ int run(){
         }
         }
 
-        renderer_render(renderer, get_player_pos_x(player), get_player_pos_y(player), get_player_angle(player));
+        renderer_render(renderer, get_player_pos_x(player), get_player_pos_y(player), get_player_angle(player), 0.03, M_PI/3);
         SDL_Delay(17);
     }
 
