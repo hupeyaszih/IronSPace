@@ -24,9 +24,9 @@ struct Renderer{
     SDL_Texture* buffer_texture;
 };
 
-Renderer* create_renderer(int screen_width, int screen_height, int renderer_width, int renderer_height){
+Renderer* create_renderer(int screen_width, int screen_height, int renderer_width, int renderer_height, int renderer_distance){
     Renderer* renderer = malloc(sizeof(Renderer));
-    renderer->render_distance = 5;
+    renderer->render_distance = renderer_distance;
 
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
         printf("error initializing SDL: %s\n", SDL_GetError());
@@ -71,6 +71,10 @@ void renderer_render(Renderer* renderer, double camera_pos_x, double camera_pos_
         double dist = 0;
         int hit = 0;
 
+        int tile_x = -1;
+        int tile_y = -1;
+
+
         // Move light forward (s = step size)
         for(double s = 0; s < renderer->render_distance; s += step_size) { 
             int checkX = (int)(camera_pos_x + pcos * s);
@@ -82,10 +86,13 @@ void renderer_render(Renderer* renderer, double camera_pos_x, double camera_pos_
                 break;
             }
 
-            if(world_map[checkX][checkY] == 1) {
+            if(world_map[checkX][checkY] != 0) {
                 // to fix fisheye effect
                 dist = s * cos(ray_angle - camera_angle);
                 hit = 1;
+
+                tile_x = checkX;
+                tile_y = checkY;
                 break;
             }
         }
@@ -106,9 +113,38 @@ void renderer_render(Renderer* renderer, double camera_pos_x, double camera_pos_
                 int pixel_id = y * renderer->renderer_width + x;
                 double distance_ratio = dist / renderer->render_distance;
                 if (distance_ratio > 1.0) distance_ratio = 1.0;
-                int depth = (int)(255 * (1.0 - distance_ratio));
+                double depth = 1.0 - distance_ratio;
 
-                renderer->pixels[pixel_id] = get_rgb(depth, depth, depth);
+                int r = 0;
+                int g = 0;
+                int b = 0;
+
+                switch (world_map[tile_x][tile_y]) {
+                    case WHITE_TILE:
+                        r = 255;
+                        g = 255;
+                        b = 255;
+                        break;
+                    case BLACK_TILE:
+                        r = 50;
+                        g = 50;
+                        b = 50;
+                        break;
+                    case BLUE_TILE: 
+                        b = 255;
+                        break;
+                    case GREEN_TILE:
+                        g = 255;
+                        break;
+                    case RED_TILE:
+                        r = 255;
+                        break;
+                }
+                r *= depth;
+                g *= depth;
+                b *= depth;
+
+                renderer->pixels[pixel_id] = get_rgb(r, g, b);
             }
         }
     }
@@ -126,4 +162,9 @@ void renderer_render(Renderer* renderer, double camera_pos_x, double camera_pos_
     SDL_RenderCopy(renderer->renderer, renderer->buffer_texture, NULL, NULL);
     SDL_RenderPresent(renderer->renderer);
 
+}
+
+
+void set_renderer_render_distance(Renderer* renderer, int new_distance){
+    renderer->render_distance = new_distance;
 }

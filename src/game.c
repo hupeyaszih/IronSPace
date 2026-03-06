@@ -7,7 +7,7 @@
 int run(){
     Player* player = create_player(); 
 
-    Renderer* renderer = create_renderer(1280, 800, 640, 400);
+    Renderer* renderer = create_renderer(1280, 800, 640, 400, 20);
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
     int close = 0;
@@ -68,7 +68,7 @@ int run(){
         }
         }
 
-        renderer_render(renderer, get_player_pos_x(player), get_player_pos_y(player), get_player_angle(player), 0.03, M_PI/3);
+        renderer_render(renderer, get_player_pos_x(player), get_player_pos_y(player), get_player_angle(player), 0.01, M_PI/3);
         SDL_Delay(17);
     }
 
