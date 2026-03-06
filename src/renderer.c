@@ -57,13 +57,12 @@ Renderer* create_renderer(int screen_width, int screen_height, int renderer_widt
     return renderer;
 }
 
-void renderer_render(Renderer* renderer, double camera_pos_x, double camera_pos_y, double camera_angle){
+void renderer_render(Renderer* renderer, double camera_pos_x, double camera_pos_y, double camera_angle, double step_size, double FOV){
     for(int i = 0;i < renderer->pixel_count;i++) renderer->pixels[i] = get_rgb(0,0,0);
 
-    double FOV = M_PI / 3; // 60 degree
     double start_angle = camera_angle - (FOV / 2);
     for(int x = 0; x < renderer->renderer_width; x++) {
-        // Her sütun için açıyı hesapla
+        // Calculate ray angle
         double ray_angle = start_angle + ((double)x / renderer->renderer_width) * FOV;
         
         double psin = sin(ray_angle);
@@ -72,19 +71,19 @@ void renderer_render(Renderer* renderer, double camera_pos_x, double camera_pos_
         double dist = 0;
         int hit = 0;
 
-        // Işını ileriye doğru gönder (s = mesafe)
-        for(double s = 0; s < renderer->render_distance; s += 0.1) { // 0.1 hassasiyet için
+        // Move light forward (s = step size)
+        for(double s = 0; s < renderer->render_distance; s += step_size) { 
             int checkX = (int)(camera_pos_x + pcos * s);
             int checkY = (int)(camera_pos_y + psin * s);
 
-            // Harita sınırları ve çarpışma kontrolü
+            // Border Check
             if(checkX < 0 || checkX >= MAP_W || checkY < 0 || checkY >= MAP_H) {
                 dist = renderer->render_distance;
                 break;
             }
 
             if(world_map[checkX][checkY] == 1) {
-                // Balıkgözü (fisheye) etkisini düzeltmek için:
+                // to fix fisheye effect
                 dist = s * cos(ray_angle - camera_angle);
                 hit = 1;
                 break;
@@ -92,14 +91,14 @@ void renderer_render(Renderer* renderer, double camera_pos_x, double camera_pos_
         }
 
         if(hit) {
-            // Duvar yüksekliğini mesafeye göre hesapla
+            // Calculate wall height
             int wall_height = (int)(renderer->renderer_height / dist);
             
-            // Sütunu çiz (Y ekseninde)
+            // Draw column
             int startY = (renderer->renderer_height / 2) - (wall_height / 2);
             int endY = (renderer->renderer_height / 2) + (wall_height / 2);
 
-            // Ekran sınırlarını aşma
+            // Border check
             if(startY < 0) startY = 0;
             if(endY >= renderer->renderer_height) endY = renderer->renderer_height - 1;
 
@@ -124,7 +123,7 @@ void renderer_render(Renderer* renderer, double camera_pos_x, double camera_pos_
         SDL_UnlockTexture(renderer->buffer_texture);
     }
 
-    SDL_RenderCopy(renderer->renderer, renderer->buffer_texture, NULL, NULL); // Tüm ekranı kaplar
+    SDL_RenderCopy(renderer->renderer, renderer->buffer_texture, NULL, NULL);
     SDL_RenderPresent(renderer->renderer);
 
 }

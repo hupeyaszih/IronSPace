@@ -40,7 +40,7 @@ int run(){
         double cur_x = get_player_pos_x(player);
         double cur_y = get_player_pos_y(player);
         
-        // Geçici değişkenler (Yeni pozisyonu hesaplamak için)
+        // Temp variables (To calculate new position)
         double next_x = cur_x;
         double next_y = cur_y;
 
