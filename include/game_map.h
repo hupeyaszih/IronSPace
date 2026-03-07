@@ -10,8 +10,13 @@
 #define BLUE_TILE 4
 #define GREEN_TILE 5
 
-extern int world_map[MAP_H][MAP_W];
+struct Grid{
+    int type;
+    int texture_asset_id;
+};
+extern struct Grid world_map[MAP_H][MAP_W];
 
 int get_grid_type(int x, int y);
+int get_grid_texture_asset_id(int x, int y);
 
 #endif

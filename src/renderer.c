@@ -1,10 +1,54 @@
 #include <math.h>
 #include "renderer.h"
+#include "asset_manager.h"
 #include "game_map.h"
 #include <SDL2/SDL.h>
+#include <stdio.h>
 
-static inline int get_rgb(int r, int g, int b){
-    return (0xFF << 24) | (r << 16) | (g << 8) | b;
+typedef struct {
+    Uint8 r, g, b, a;
+} ColorRGBA;
+
+static inline uint32_t rgb_color(uint8_t r, uint8_t g, uint8_t b) {
+    return (255<<24) + (r<<16) + (g<<8) + b;
+}
+static inline ColorRGBA get_rgb(SDL_Surface* surface, int x, int y){
+    ColorRGBA color = {0, 0, 0, 0};
+
+    // 1. Boundary check (Crucial: prevents segmentation faults!)
+    if (x < 0 || x >= surface->w || y < 0 || y >= surface->h) {
+        return color; 
+    }
+
+    // 2. Lock if necessary
+    if (SDL_MUSTLOCK(surface)) SDL_LockSurface(surface);
+
+    // 3. Get the pixel address
+    // We use the 'pitch' (row length in bytes) to find the right row
+    Uint8* pixel_ptr = (Uint8*)surface->pixels + (y * surface->pitch) + (x * surface->format->BytesPerPixel);
+    Uint32 pixel_data;
+
+    // 4. Handle different bit-depths (8, 16, 24, or 32-bit)
+    switch (surface->format->BytesPerPixel) {
+        case 1: pixel_data = *pixel_ptr; break;
+        case 2: pixel_data = *(Uint16*)pixel_ptr; break;
+        case 3: 
+            // 24-bit is tricky, depends on Endianness
+            #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+                pixel_data = pixel_ptr[0] << 16 | pixel_ptr[1] << 8 | pixel_ptr[2];
+            #else
+                pixel_data = pixel_ptr[0] | pixel_ptr[1] << 8 | pixel_ptr[2] << 16;
+            #endif
+            break;
+        case 4: pixel_data = *(Uint32*)pixel_ptr; break;
+        default: pixel_data = 0; break;
+    }
+
+    // 5. Extract the actual RGBA components
+    SDL_GetRGBA(pixel_data, surface->format, &color.r, &color.g, &color.b, &color.a);
+
+    if (SDL_MUSTLOCK(surface)) SDL_UnlockSurface(surface);
+    return color;
 }
 
 struct Renderer{
@@ -57,8 +101,8 @@ Renderer* create_renderer(int screen_width, int screen_height, int renderer_widt
     return renderer;
 }
 
-void renderer_render(Renderer* renderer, double camera_pos_x, double camera_pos_y, double camera_angle, double step_size, double FOV){
-    for(int i = 0;i < renderer->pixel_count;i++) renderer->pixels[i] = get_rgb(0,0,0);
+void renderer_render(Renderer* renderer, AssetManager* texture_manager, double camera_pos_x, double camera_pos_y, double camera_angle, double step_size, double FOV){
+    for(int i = 0;i < renderer->pixel_count;i++) renderer->pixels[i] = rgb_color(0,0,0);
 
     double start_angle = camera_angle - (FOV / 2);
     for(int x = 0; x < renderer->renderer_width; x++) {
@@ -86,7 +130,7 @@ void renderer_render(Renderer* renderer, double camera_pos_x, double camera_pos_
                 break;
             }
 
-            if(world_map[checkX][checkY] != 0) {
+            if(world_map[checkX][checkY].type != 0) {
                 // to fix fisheye effect
                 dist = s * cos(ray_angle - camera_angle);
                 hit = 1;
@@ -98,6 +142,27 @@ void renderer_render(Renderer* renderer, double camera_pos_x, double camera_pos_
         }
 
         if(hit) {
+            SDL_Surface* tex_surface = get_asset_surface(get_asset(texture_manager, world_map[tile_x][tile_y].texture_asset_id));
+            int tex_w = tex_surface->w;
+            int tex_h = tex_surface->h;
+
+            double hit_x = camera_pos_x + pcos * dist;
+            double hit_y = camera_pos_y + psin * dist;
+
+            double hit_offset;
+            if (tile_x != (int)(camera_pos_x + pcos * (dist - step_size))) {
+                // Hit a wall on X axis — use Y fraction
+                hit_offset = hit_y - floor(hit_y);
+            } else {
+                // Hit a wall on Y axis — use X fraction
+                hit_offset = hit_x - floor(hit_x);
+            }
+
+
+            int tx = (int)(hit_offset * tex_w);
+            if (tx < 0) tx = 0;
+            if (tx >= tex_w) tx = tex_w - 1;
+            
             // Calculate wall height
             int wall_height = (int)(renderer->renderer_height / dist);
             
@@ -115,40 +180,22 @@ void renderer_render(Renderer* renderer, double camera_pos_x, double camera_pos_
                 if (distance_ratio > 1.0) distance_ratio = 1.0;
                 double depth = 1.0 - distance_ratio;
 
-                int r = 0;
-                int g = 0;
-                int b = 0;
+                double wall_fraction = (double)(y - ((renderer->renderer_height / 2) - (wall_height / 2))) / (double)wall_height;
+                    int ty = (int)(wall_fraction * tex_h);
+                    if (ty < 0) ty = 0;
+                    if (ty >= tex_h) ty = tex_h - 1;
 
-                switch (world_map[tile_x][tile_y]) {
-                    case WHITE_TILE:
-                        r = 255;
-                        g = 255;
-                        b = 255;
-                        break;
-                    case BLACK_TILE:
-                        r = 50;
-                        g = 50;
-                        b = 50;
-                        break;
-                    case BLUE_TILE: 
-                        b = 255;
-                        break;
-                    case GREEN_TILE:
-                        g = 255;
-                        break;
-                    case RED_TILE:
-                        r = 255;
-                        break;
-                }
-                r *= depth;
-                g *= depth;
-                b *= depth;
+                    ColorRGBA colour = get_rgb(tex_surface, tx, ty);
 
-                renderer->pixels[pixel_id] = get_rgb(r, g, b);
+                    // Apply depth shading
+                    renderer->pixels[pixel_id] = rgb_color(
+                        (uint8_t)(colour.r * depth),
+                        (uint8_t)(colour.g * depth),
+                        (uint8_t)(colour.b * depth)
+                    );
             }
         }
     }
-
 
     SDL_RenderClear(renderer->renderer);
 

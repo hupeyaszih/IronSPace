@@ -1,6 +1,6 @@
 #include "game.h"
+#include "asset_manager.h"
 #include "renderer.h"
-#include "SDL2/SDL.h"
 #include "game_map.h"
 #include "player.h"
 
@@ -11,6 +11,15 @@ int run(){
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
     int close = 0;
+
+    //test zone
+    init_sdl_image_lib();
+    AssetManager* texture_manager = create_asset_manager(5);
+    load_asset(texture_manager, "./assets/wall.png");
+    load_asset(texture_manager, "./assets/1.png");
+    load_asset(texture_manager, "./assets/2.png");
+
+    //
 
     set_player_pos_x(player, 4);
 
@@ -68,7 +77,7 @@ int run(){
         }
         }
 
-        renderer_render(renderer, get_player_pos_x(player), get_player_pos_y(player), get_player_angle(player), 0.01, M_PI/3);
+        renderer_render(renderer, texture_manager, get_player_pos_x(player), get_player_pos_y(player), get_player_angle(player), 0.01, M_PI/3);
         SDL_Delay(17);
     }
 

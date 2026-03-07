@@ -1,25 +1,30 @@
 #include "game_map.h"
 
-int world_map[MAP_H][MAP_W] = {
-    {WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE},
-    {WHITE_TILE, 0, 0, 0, 0, 0, 0, WHITE_TILE, 0, 0, 0, 0, 0, 0, 0, WHITE_TILE},
-    {WHITE_TILE, 0, BLACK_TILE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, RED_TILE, 0, WHITE_TILE},
-    {WHITE_TILE, 0, 0, 0, WHITE_TILE, WHITE_TILE, 0, WHITE_TILE, WHITE_TILE, 0, WHITE_TILE, WHITE_TILE, 0, 0, 0, WHITE_TILE},
-    {WHITE_TILE, 0, 0, WHITE_TILE, 0, 0, 0, 0, 0, 0, 0, 0, WHITE_TILE, 0, 0, WHITE_TILE},
-    {WHITE_TILE, 0, 0, WHITE_TILE, 0, BLUE_TILE, 0, 0, 0, GREEN_TILE, 0, 0, WHITE_TILE, 0, 0, WHITE_TILE},
-    {WHITE_TILE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, WHITE_TILE},
-    {WHITE_TILE, WHITE_TILE, 0, WHITE_TILE, 0, 0, 0, 0, 0, 0, 0, 0, WHITE_TILE, 0, WHITE_TILE, WHITE_TILE},
-    {WHITE_TILE, WHITE_TILE, 0, WHITE_TILE, 0, 0, 0, 0, 0, 0, 0, 0, WHITE_TILE, 0, WHITE_TILE, WHITE_TILE},
-    {WHITE_TILE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, WHITE_TILE},
-    {WHITE_TILE, 0, 0, WHITE_TILE, 0, GREEN_TILE, 0, 0, 0, BLUE_TILE, 0, 0, WHITE_TILE, 0, 0, WHITE_TILE},
-    {WHITE_TILE, 0, 0, WHITE_TILE, 0, 0, 0, 0, 0, 0, 0, 0, WHITE_TILE, 0, 0, WHITE_TILE},
-    {WHITE_TILE, 0, 0, WHITE_TILE, WHITE_TILE, 0, WHITE_TILE, WHITE_TILE, WHITE_TILE, 0, WHITE_TILE, WHITE_TILE, 0, 0, 0, WHITE_TILE},
-    {WHITE_TILE, 0, RED_TILE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, BLACK_TILE, 0, WHITE_TILE},
-    {WHITE_TILE, 0, 0, 0, 0, 0, 0, WHITE_TILE, 0, 0, 0, 0, 0, 0, 0, WHITE_TILE},
-    {WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE, WHITE_TILE}
+struct Grid world_map[MAP_H][MAP_W] = {
+  { {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0} },
+  { {1,0}, {0,0}, {0,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {0,0}, {0,0}, {1,0} },
+  { {1,0}, {0,0}, {3,2}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {3,2}, {0,0}, {1,0} },
+  { {1,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {1,0} },
+  { {1,0}, {0,0}, {0,0}, {1,0}, {1,0}, {1,0}, {0,0}, {0,0}, {0,0}, {0,0}, {1,0}, {1,0}, {1,0}, {0,0}, {0,0}, {1,0} },
+  { {1,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {1,0} },
+  { {1,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {2,1}, {0,0}, {0,0}, {2,1}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {1,0} },
+  { {1,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {1,0} },
+  { {1,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {1,0} },
+  { {1,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {3,2}, {3,2}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {1,0} },
+  { {1,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {0,0}, {3,2}, {3,2}, {0,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {1,0} },
+  { {1,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {1,0} },
+  { {1,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {1,0} },
+  { {1,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {2,1}, {0,0}, {0,0}, {2,1}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {1,0} },
+  { {1,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {1,0}, {0,0}, {0,0}, {1,0} },
+  { {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0} }
 };
 
 int get_grid_type(int x, int y){
     if(x < 0 || x > MAP_W || y < 0 || y > MAP_H) return -1;
-    return world_map[x][y];
+    return world_map[x][y].type;
+}
+
+int get_grid_texture_asset_id(int x, int y){
+    if(x < 0 || x > MAP_W || y < 0 || y > MAP_H) return -1;
+    return world_map[x][y].texture_asset_id;
 }
